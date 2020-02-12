@@ -46,7 +46,16 @@ class SQLObject
   end
 
   def self.find(id)
-    # ...
+    # finds the row with the matching id
+    row = DBConnection.execute(<<-SQL, id)
+      SELECT *
+      FROM #{self.table_name}
+      WHERE id = ?
+    SQL
+    # if there is no row, the query will return an empty array
+    # if array is empty, return nil
+    # otherwise create a new object and return it
+    row.empty? ? (return nil) : (return self.new(row.first))
   end
 
   def initialize(params = {})
