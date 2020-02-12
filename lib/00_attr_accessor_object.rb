@@ -6,12 +6,12 @@ class AttrAccessorObject
     # to find the instance variables
     names.each do |name|
       define_method(name) do
-        self.instance_variable_get(("@" + name.to_s))
+        instance_variable_get("@#{name}")
       end
 
       # "=" has to be appended to the name to create the correct method
-      define_method((name.to_s + "=").to_sym) do |val|
-        self.instance_variable_set("@" + name.to_s, val)
+      define_method("#{name}=") do |val|
+        instance_variable_set("@#{name}", val)
       end
     end
   end
