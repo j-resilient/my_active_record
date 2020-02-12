@@ -46,7 +46,16 @@ class SQLObject
   end
 
   def initialize(params = {})
-    # ...
+    params.each do |col, val|
+      # turn the column name into a symbol
+      col = col.to_sym
+      # raise an error if column doesn't exist
+      # self.class gets the name of the current class
+      raise "unknown attribute '#{col}'" unless self.class.columns.include?(col)
+
+      # call the setter for the current column 
+      self.send("#{col}=", val)
+    end
   end
 
   def attributes
