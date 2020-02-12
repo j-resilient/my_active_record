@@ -5,7 +5,17 @@ require 'active_support/inflector'
 
 class SQLObject
   def self.columns
-    # ...
+    # execute2 returns a list of column names as its first element
+    # otherwise we'd just use execute
+    # and neither execute nor execute2 let you interpolate the from statement with '?'
+    # instead we have to use string interpolation #{}
+    return @columns unless @columns.nil?
+    columns = DBConnection.execute2(<<-SQL)
+      SELECT *
+      FROM #{self.table_name}
+      LIMIT 0
+    SQL
+    @columns = columns.flatten.map(&:to_sym)
   end
 
   def self.finalize!
