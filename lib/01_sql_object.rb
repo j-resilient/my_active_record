@@ -85,17 +85,24 @@ class SQLObject
     # convert to string: dbconnection.execute doesn't use symbols
     col_names = columns.map(&:to_s).join(",")
     question_marks = (["?"] * columns.length).join(",")
-
+    
     DBConnection.execute(<<-SQL, *attribute_values.drop(1))
-      INSERT INTO #{self.class.table_name} (#{col_names})
-      VALUES (#{question_marks})
+    INSERT INTO #{self.class.table_name} (#{col_names})
+    VALUES (#{question_marks})
     SQL
-
+    
     self.id = DBConnection.last_insert_row_id
   end
-
+  
   def update
-    # ...
+    columns = self.class.columns
+    set = columns.drop(1).map! { |col| "#{col} = ?"}.join(",")
+    values = *attribute_values
+    DBConnection.execute(<<-SQL, values.drop(1), values.first)
+      UPDATE #{self.class.table_name}
+      SET #{set}
+      WHERE id = ?
+    SQL
   end
 
   def save
