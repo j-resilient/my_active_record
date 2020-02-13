@@ -98,6 +98,7 @@ class SQLObject
     columns = self.class.columns
     set = columns.drop(1).map! { |col| "#{col} = ?"}.join(",")
     values = *attribute_values
+
     DBConnection.execute(<<-SQL, values.drop(1), values.first)
       UPDATE #{self.class.table_name}
       SET #{set}
@@ -106,6 +107,10 @@ class SQLObject
   end
 
   def save
-    # ...
+    if self.id.nil?
+      self.insert
+    else
+      self.update
+    end
   end
 end
