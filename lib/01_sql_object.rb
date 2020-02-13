@@ -35,7 +35,7 @@ class SQLObject
 
   def self.all
     rows = DBConnection.execute(<<-SQL)
-      SELECT *
+      SELECT #{self.table_name}.*
       FROM #{self.table_name}
     SQL
     parse_all(rows)
@@ -48,9 +48,9 @@ class SQLObject
   def self.find(id)
     # finds the row with the matching id
     row = DBConnection.execute(<<-SQL, id)
-      SELECT *
+      SELECT #{self.table_name}.*
       FROM #{self.table_name}
-      WHERE id = ?
+      WHERE #{self.table_name}.id = ?
     SQL
     # if there is no row, the query will return an empty array
     # if array is empty, return nil
@@ -96,21 +96,17 @@ class SQLObject
   
   def update
     columns = self.class.columns
-    set = columns.drop(1).map! { |col| "#{col} = ?"}.join(",")
+    set = columns.drop(1).map! { |col| "#{col} = ?"}.join(", ")
     values = *attribute_values
 
     DBConnection.execute(<<-SQL, values.drop(1), values.first)
       UPDATE #{self.class.table_name}
       SET #{set}
-      WHERE id = ?
+      WHERE #{self.class.table_name}.id = ?
     SQL
   end
 
   def save
-    if self.id.nil?
-      self.insert
-    else
-      self.update
-    end
+    self.id.nil? ? self.insert : self.update
   end
 end
