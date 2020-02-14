@@ -28,7 +28,9 @@ end
 
 class HasManyOptions < AssocOptions
   def initialize(name, self_class_name, options = {})
-    # ...
+    @foreign_key = options.has_key?(:foreign_key) ? options[:foreign_key] : "#{self_class_name.to_s.downcase}_id".to_sym
+    @primary_key = options.has_key?(:primary_key) ? options[:primary_key] : :id
+    @class_name = options.has_key?(:class_name) ? options[:class_name] : "#{name.to_s.singularize.capitalize}"
   end
 end
 
