@@ -51,6 +51,7 @@ class SQLObject
       SELECT #{self.table_name}.*
       FROM #{self.table_name}
       WHERE #{self.table_name}.id = ?
+      LIMIT 1
     SQL
     # if there is no row, the query will return an empty array
     # if array is empty, return nil
