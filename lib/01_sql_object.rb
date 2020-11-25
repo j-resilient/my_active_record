@@ -88,8 +88,8 @@ class SQLObject
     question_marks = (["?"] * columns.length).join(",")
     
     DBConnection.execute(<<-SQL, *attribute_values.drop(1))
-    INSERT INTO #{self.class.table_name} (#{col_names})
-    VALUES (#{question_marks})
+      INSERT INTO #{self.class.table_name} (#{col_names})
+      VALUES (#{question_marks})
     SQL
     
     self.id = DBConnection.last_insert_row_id
