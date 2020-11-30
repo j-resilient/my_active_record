@@ -70,6 +70,24 @@ module Associatable
   end
 
   def has_many(name, options = {})
+    # has_many :toys,
+    #   primary_key: :id,
+    #   foreign_key: :cat_id,
+    #   class_name: "Toy"
+    # primary_key -> cat's id
+    # foreign_key -> the cat's id, stored in the toys table
+    # class_name  -> the name of the other table, 'Toy'
+
+    options = HasManyOptions.new(name, self, options)
+
+    # define the association method
+    define_method(name) do
+      # get the foreign key
+      for_val = self.send(options.primary_key)
+      options
+        .model_class
+        .where(options.foreign_key => for_val)
+    end
   end
 
   def assoc_options
