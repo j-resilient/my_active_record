@@ -46,6 +46,7 @@ module Associatable
   def belongs_to(name, options = {})
     # saves the association name and options in a BelongsToOptions obj
     options = BelongsToOptions.new(name, options)
+    assoc_options[name] = options
 
     # create the actual association method
     # belongs_to :cat,
@@ -91,7 +92,7 @@ module Associatable
   end
 
   def assoc_options
-    # Wait to implement this in Phase IVa. Modify `belongs_to`, too.
+    @assoc_options ||= {}
   end
 end
 
