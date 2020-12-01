@@ -38,11 +38,6 @@ end
 
 module Associatable
   # Phase IIIb
-  # this is the method I got stuck on:
-  # I reviewed the solution code and didn't get it,
-  # copied it over and made it work and still didn't get it,
-  # came back to it later and still didn't give it
-  # and I have decided that stopping here is better than crying indefinitely over code
   def belongs_to(name, options = {})
     # saves the association name and options in a BelongsToOptions obj
     options = BelongsToOptions.new(name, options)
